@@ -1,0 +1,17 @@
+name: CI
+
+on: 
+  workflow_dispatch:
+    inputs:
+      onec_version:
+        description: 'Версия 1С Предприятие'     
+        required: true
+
+        jobs:
+  printInputs:
+    runs-on: ubuntu-latest
+    steps:
+    - run: |
+        echo "Log level: ${{ github.event.inputs.onec_version }}"
+
+
