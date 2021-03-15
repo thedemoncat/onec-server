@@ -11,10 +11,10 @@ WORKDIR /tmp
 
 RUN apk add curl tar\
   && cd /tmp \
-  %% curl -sL -o oneget http://git.io/oneget.sh \
-  && chmod +x oneget \
+  %% curl -sL -o ./oneget http://git.io/oneget.sh \
+  && chmod +x ./oneget \
   && ./oneget --nicks $TYPE --version-filter $ONEC_VERSION --distrib-filter 'deb64_.*.tar.gz$' \
-  && rm -f oneget \
+  && rm -f ./oneget \
   && cd  $TYPE/$ONEC_VERSION \
   && for file in *.tar.gz; do tar -zxf "$file"; done \
   && rm -rf *.tar.gz
