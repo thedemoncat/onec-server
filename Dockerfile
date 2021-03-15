@@ -6,14 +6,13 @@ ARG ONEC_PASSWORD
 ARG ONEC_VERSION
 ARG TYPE=platform83
 
-ARG ONEGET_VER=v0.0.7
+ARG ONEGET_VERSION=v0.0.7
 WORKDIR /tmp
 
 RUN apk add curl tar\
   && cd /tmp \
-  && curl -L https://github.com/v8platform/oneget/releases/download/$ONEGET_VER/oneget_Linux_x86_64.tar.gz > oneget.tar.gz \
-  && tar -zxvf  oneget.tar.gz \
-  && rm -f oneget.tar.gz \
+  %% curl -sL -o oneget http://git.io/oneget.sh \
+  && chmod +x oneget \
   && ./oneget --nicks $TYPE --version-filter $ONEC_VERSION --distrib-filter 'deb64_.*.tar.gz$' \
   && rm -f oneget \
   && cd  $TYPE/$ONEC_VERSION \
