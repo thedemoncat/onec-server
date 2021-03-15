@@ -7,7 +7,7 @@ on:
         description: 'Версия 1С Предприятие'     
         required: true
 
-        jobs:
+jobs:
   printInputs:
     runs-on: ubuntu-latest
     steps:
