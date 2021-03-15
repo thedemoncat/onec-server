@@ -1,9 +1,20 @@
 #!/bin/bash
-set -e
 
-export $(grep -v '^#' .env | xargs)
+if [ -f ".env" ]; then
+    export $(grep -v '^#' .env | xargs)
+fi
 
-docker build -t demoncat/onec-server:"$ONEC_VERSION" \
-    --build-arg ONEC_USERNAME="$ONEC_USERNAME" \
-    --build-arg ONEC_PASSWORD="$ONEC_PASSWORD"  \
-    --build-arg ONEC_VERSION="$ONEC_VERSION" .
+IMAGE_NAME=${1:-"ghcr.io/thedemoncat/onec-server"}
+
+env=()
+while IFS= read -r line || [[ "$line" ]]; do
+  env+=("$line")
+done < ONEC_VERSION
+
+for item in ${env[*]}
+do
+    docker build -t $IMAGE_NAME:"$item" \
+        --build-arg ONEC_USERNAME="$ONEC_USERNAME" \
+        --build-arg ONEC_PASSWORD="$ONEC_PASSWORD"  \
+        --build-arg ONEC_VERSION="$item" .
+done
