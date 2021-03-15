@@ -20,7 +20,7 @@ RUN apk add curl tar\
   && for file in *.tar.gz; do tar -zxf "$file"; done \
   && rm -rf *.tar.gz
 
-FROM demoncat/onec-base:latest as base
+FROM ghcr.io/thedemoncat/onec-base/onec_base:latest as base
 LABEL maintainer="Ruslan Zhdanov <nl.ruslan@yandex.ru> (@TheDemonCat)"
 
 ARG ONEC_VERSION
