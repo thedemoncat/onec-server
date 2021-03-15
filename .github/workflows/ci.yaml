@@ -59,7 +59,7 @@ jobs:
             ONEC_VERSION=${{ steps.extract_version.outputs.version }}
           push: true
           tags: |
-            ghcr.io/thedemoncat/onec-server/onec-server:${{ steps.extract_version.outputs.version }}
+            ghcr.io/thedemoncat/onec-server:${{ steps.extract_version.outputs.version }}
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache-new
  
