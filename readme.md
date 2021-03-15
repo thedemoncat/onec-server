@@ -1,6 +1,6 @@
 # Полный образ 1С:Предприятие и EDT
 
-[![CI](https://github.com/TheDemonCat/onec-server/actions/workflows/ci.yaml/badge.svg)](https://github.com/TheDemonCat/onec-server/actions/workflows/ci.yaml)
+[![Build Images - 8.3.17.1851](https://github.com/TheDemonCat/onec-server/actions/workflows/ci.yaml/badge.svg)](https://github.com/TheDemonCat/onec-server/actions/workflows/ci.yaml)
 
 ## Сборка 
 
