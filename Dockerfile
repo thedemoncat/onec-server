@@ -6,19 +6,14 @@ ARG ONEC_PASSWORD
 ARG ONEC_VERSION
 ARG TYPE=platform83
 
-ARG ONEGET_VER=v0.0.7
+ARG ONEGET_VERSION=v0.1.10
 WORKDIR /tmp
 
-RUN apk add curl tar\
+RUN apk add curl bash\
   && cd /tmp \
-  && curl -L https://github.com/v8platform/oneget/releases/download/$ONEGET_VER/oneget_Linux_x86_64.tar.gz > oneget.tar.gz \
-  && tar -zxvf  oneget.tar.gz \
-  && rm -f oneget.tar.gz \
-  && ./oneget --nicks $TYPE --version-filter $ONEC_VERSION --distrib-filter 'deb64_.*.tar.gz$' \
-  && rm -f oneget \
-  && cd  $TYPE/$ONEC_VERSION \
-  && for file in *.tar.gz; do tar -zxf "$file"; done \
-  && rm -rf *.tar.gz
+  && curl -sL http://git.io/oneget.sh > oneget \
+  && chmod +x oneget \ 
+  && ./oneget --nicks $TYPE --version-filter $ONEC_VERSION --distrib-filter 'deb64_.*.tar.gz$' --extract --rename
 
 FROM ghcr.io/thedemoncat/onec_base:latest as base
 LABEL maintainer="Ruslan Zhdanov <nl.ruslan@yandex.ru> (@TheDemonCat)"
@@ -26,14 +21,14 @@ LABEL maintainer="Ruslan Zhdanov <nl.ruslan@yandex.ru> (@TheDemonCat)"
 ARG ONEC_VERSION
 ARG TYPE=platform83
 
-COPY --from=downloader /tmp/$TYPE/$ONEC_VERSION/*.deb /tmp/dist/
+COPY --from=downloader /tmp/pack/*.deb /tmp/dist/
 
 RUN set -xe \
     && cd /tmp/dist/ \
-    && dpkg -i ./1c-enterprise83-common_*.deb \
-        ./1c-enterprise83-server_*.deb \
-        ./1c-enterprise83-ws_*.deb \
-        ./1c-enterprise83-crs_*.deb \
+    && dpkg -i ./common-*.deb \
+        ./server-*.deb \
+        ./ws-*.deb \
+        ./crs-*.deb \
     && cd .. \
     && rm -rf dist
 
