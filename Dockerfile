@@ -15,7 +15,7 @@ RUN apk add curl bash\
   && chmod +x oneget \ 
   && ./oneget --nicks $TYPE --version-filter $ONEC_VERSION --distrib-filter 'deb64_.*.tar.gz$' --extract --rename
 
-FROM ghcr.io/thedemoncat/onec_base:latest as base
+FROM demoncat/onec-base:latest as base
 LABEL maintainer="Ruslan Zhdanov <nl.ruslan@yandex.ru> (@TheDemonCat)"
 
 ARG ONEC_VERSION
