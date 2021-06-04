@@ -42,8 +42,14 @@ COPY ./scripts/srv1cv83 /etc/init.d/srv1cv83
 
 COPY ./configs/logcfg.xml /home/usr1cv8/.1cv8/1C/1cv8/conf
 
+COPY ./scripts/create_symlink.sh create_symlink.sh
+
+RUN set -e \
+  && chmod +x create_symlink.sh \
+  && ./create_symlink.sh $ONEC_VERSION
+
 USER usr1cv8 
 
 RUN mkdir /home/usr1cv8/srvinfo 
 
-CMD ["/opt/1C/v8.3/x86_64/ragent", "-debug", "-d",  "/home/usr1cv8/srvinfo"]
+CMD ["ragent", "-debug", "-d",  "/home/usr1cv8/srvinfo"]
