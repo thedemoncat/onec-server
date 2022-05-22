@@ -1,4 +1,4 @@
-name: CI
+name: onec server build
 
 on:
   push:
@@ -11,42 +11,50 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-
     steps:
-      -
-        name: Актуализация
+      - name: Актуализация
         uses: actions/checkout@v2
 
-      - 
-        name: Install buildx
-        uses: docker/setup-buildx-action@v1
-        id: buildx
-        with:
-          install: true
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v2
+      
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
 
-      -
-        name: Cache Docker layers
-        uses: actions/cache@v2
-        with:
-          path: /tmp/.buildx-cache
-          key: ${{ runner.os }}-buildx-${{ github.sha }}
-          restore-keys: |
-            ${{ runner.os }}-buildx-
-
-      - 
-        name: Извлечение версии 1С
+      - name: Извлечение версии 1С из файла
         shell: bash
         run: echo "::set-output name=version::$(cat ONEC_VERSION | tail -n1)"
         id: extract_version
 
-      -
-        name: Docker Login
-        env:
-          GITHUB_TOKEN: ${{ secrets.CR_PAT }}
-        run: echo "${GITHUB_TOKEN}" | docker login ghcr.io --username thedemoncat --password-stdin
+      - name: Извлечение версии 1С для определения варинта сборки
+        env: 
+          ONEC_VERSION: ${{ steps.extract_version.outputs.version }}   
+        shell: bash
+        run: echo "::set-output name=version::$(echo ONEC_VERSION | cut -d'.' -f3)"
+        id: build_version
 
-      - 
-        name: Push to GitHub Packages
+      
+      ######################
+      # Login to DockerHub #
+      ######################
+      - name: Login to DockerHub
+        uses: docker/login-action@v2.0.0
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      ####################
+      # Login to GHCR.io #
+      ####################
+      
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Push to GitHub Packages new version
         uses: docker/build-push-action@v2
         env: 
           ONEC_VERSION: ${{ steps.extract_version.outputs.version }}        
@@ -60,15 +68,3 @@ jobs:
           push: true
           tags: |
             ghcr.io/thedemoncat/onec-server:${{ steps.extract_version.outputs.version }}
-          cache-from: type=local,src=/tmp/.buildx-cache
-          cache-to: type=local,dest=/tmp/.buildx-cache-new
- 
-        
-        # Temp fix
-        # https://github.com/docker/build-push-action/issues/252
-        # https://github.com/moby/buildkit/issues/1896
-      -
-        name: Move cache
-        run: |
-          rm -rf /tmp/.buildx-cache
-          mv /tmp/.buildx-cache-new /tmp/.buildx-cache
