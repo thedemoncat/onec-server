@@ -13,8 +13,20 @@ done < ONEC_VERSION
 
 for item in ${env[*]}
 do
+  OLD_VERSION_DIST=19
+  echo "Собираем образ с версией платформы $item"
+  if [ "$(echo $item | cut -d'.' -f3)" -gt "$OLD_VERSION_DIST" ]; then
+      echo "С версии 8.3.20 и выше, дистрибутив установки изенился на run. Собираем по новой схеме сборки"
     docker build -t $IMAGE_NAME:"$item" \
         --build-arg ONEC_USERNAME="$ONEC_USERNAME" \
         --build-arg ONEC_PASSWORD="$ONEC_PASSWORD"  \
         --build-arg ONEC_VERSION="$item" .
+  else
+      echo "Ниже версии 8.3.20, используется старая версия дистрибутивов (deb пакеты). Собираем по старой схеме сборки"
+      docker build -t $IMAGE_NAME:"$item" \
+        --build-arg ONEC_USERNAME="$ONEC_USERNAME" \
+        --build-arg ONEC_PASSWORD="$ONEC_PASSWORD"  \
+        --build-arg ONEC_VERSION="$item" \
+        -f Dockerfile-deb .
+  fi 
 done
