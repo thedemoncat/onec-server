@@ -1,5 +1,7 @@
 FROM demoncat/onec-base:latest as base
-LABEL maintainer="Ruslan Zhdanov <nl.ruslan@yandex.ru> (@TheDemonCat)"
+
+LABEL org.opencontainers.image.authors="Ruslan Zhdanov <nl.ruslan@yandex.ru> (@TheDemonCat)"
+LABEL org.opencontainers.image.source="https://github.com/thedemoncat/onec-server"
 
 ARG ONEC_USERNAME
 ARG ONEC_PASSWORD
