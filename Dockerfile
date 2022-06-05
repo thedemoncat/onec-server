@@ -21,6 +21,7 @@ RUN set -xe; \
     geoclue-2.0; \
     rm -rf /var/lib/apt/lists/*
 
+#start_oneget
 RUN set -xe; \
   mkdir /tmp/onec; \
   cd /tmp/onec; \ 
@@ -31,6 +32,7 @@ RUN set -xe; \
   ./setup-full-$ONEC_VERSION-x86_64.run --mode unattended  --enable-components ws,server_admin,server  --installer-language en; \
   cd /tmp; \
   rm -rf /tmp/onec
+#end_oneget
 
 EXPOSE 1540-1541 1545 1550 1560-1591
 
